@@ -1,34 +1,64 @@
-import { createContext, useState } from 'react'
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 
 import DirectoryBrowser from '$/components/DirectoryBrowser';
 import Markdown from '$/components/Markdown'
+import MainMenu from '$/components/MainMenu'
+import { FileSystemProvider } from '$/hooks/useFileSystem';
+import { useState } from 'react';
 
-export const FilesContext = createContext<string>("");
+
 
 function App() {
 
-  const [file, setFile] = useState<string>();
+  const [sidebar,setSidebar] = useState<boolean>(true);
+  const [semanticBar,setSemanticBar] = useState<boolean>(true);
+
+  const twoPanel = <Splitter className="h-screen w-screen" >
+    <SplitterPanel
+      size={15} className="flex align-items-center justify-content-center">
+      <DirectoryBrowser />
+    </SplitterPanel>
+
+    <SplitterPanel
+      size={50}
+      className="flex align-items-center justify-content-center">
+      <Markdown mode='split' />
+    </SplitterPanel>
+  </Splitter>
+
+
+  const threePanel = <Splitter className="h-screen w-screen" >
+    <SplitterPanel
+      size={15} className="flex align-items-center justify-content-center">
+      <DirectoryBrowser />
+    </SplitterPanel>
+
+    <SplitterPanel
+      size={50}
+      className="flex align-items-center justify-content-center">
+      <Markdown mode='split' />
+    </SplitterPanel>
+
+
+    <SplitterPanel
+      size={25}
+      className="flex align-items-center justify-content-center">
+      Hi
+    </SplitterPanel>
+
+
+  </Splitter>
+
+
   return (
-
-    <FilesContext.Provider value={{ file: file, setFile: setFile }}>
-
-      <Splitter className="h-screen w-screen" >
-        <SplitterPanel
-          size={25} className="flex align-items-center justify-content-center">
-
-          <DirectoryBrowser />
-
-        </SplitterPanel>
-        <SplitterPanel
-          size={75}
-          className="flex align-items-center justify-content-center">
-
-          <Markdown mode='split' />
-
-        </SplitterPanel>
-      </Splitter>
-    </FilesContext.Provider>
+    <FileSystemProvider>
+      <MainMenu 
+      semantic={semanticBar} 
+      sidebar={sidebar} 
+      setSemanticBar={setSemanticBar} 
+      setSidebar={setSidebar} />
+      {semanticBar ? threePanel : twoPanel}
+    </FileSystemProvider>
   )
 }
 

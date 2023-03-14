@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import {  useState } from 'react';
 
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { BreadCrumb } from 'primereact/breadcrumb';
@@ -6,9 +6,7 @@ import { Menubar } from 'primereact/menubar';
 
 import MarkdownEditor from '$/components/MarkdownEditor'
 import MarkdownViewer from '$/components/MarkdownViewer'
-
-import { FilesContext } from "$/App";
-
+import { useFileSystem } from '$/hooks/useFileSystem';
 
 function Menu({ setMode }: any) {
     const items = [
@@ -80,15 +78,18 @@ export type MarkDownOptions = {
 
 export default function Parent(options: MarkDownOptions) {
 
-    const { file, setFile } = useContext(FilesContext);
+
+    const { current, saveCurrent } = useFileSystem();
+
+    // const { file, setFile } = useContext(FilesContext);
     const [mode, setMode] = useState(options.mode);
 
-    const Split = SplitView({ file: file, setFile: setFile })
+    const Split = SplitView({ file: current, setFile: saveCurrent })
     const Edit = <MarkdownEditor
         className="w-full"
-        markdown={file}
-        setMarkDown={setFile} />
-    const View = <MarkdownViewer markdown={file} />
+        markdown={current}
+        setMarkDown={saveCurrent} />
+    const View = <MarkdownViewer markdown={current} />
 
     return (
         <div className='flex flex-col w-full'>
